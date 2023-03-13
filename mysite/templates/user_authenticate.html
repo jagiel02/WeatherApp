@@ -1,0 +1,105 @@
+{% extends 'weather.html' %}
+{% block content %}
+
+    <section class="hero is-small is-link">
+        {% if user.is_authenticated %}
+         <div align="justifty">
+             <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+             Hello {{user}}
+            {% else %}
+        <p align="right">
+             <a href="{% url 'login' %}" class="btn btn-success" >Login</a>
+             <a href="{% url 'register' %}" class="btn btn-success" >Register</a>
+            </p>
+        {% endif %}
+             </div>
+            <div class="container">
+                <h1 style="font-size:60px;">Weather_App</h1>
+                </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                {{ form.name }}
+                            </div>
+                            <div class="control">
+                                <button type="submit" class="button is-info">
+                                    Add City
+                                </button>
+                            </div>
+                        </div>
+                        {% for message in messages %}
+                    <div class="container-fluid p-0">
+                        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                        {{ message }}
+                         </div>
+                    </div>
+                    {% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    {% for city_weather in weather_data %}
+                    <div class="box">
+                        <article class="media">
+                            <div class="media-left">
+                                <figure class="image is-50x50">
+                                    <img src="http://openweathermap.org/img/w/{{ city_weather.icon }}.png" alt="Image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <span class="title">{{ city_weather.city }}</span>
+                                        <br>
+                                        <span class="subtitle">{{ city_weather.temperature }}° C</span>
+                                        <br> {{ city_weather.description }}
+                                        <div class="container2">
+                                            <div class="center">
+                                                {% if user.is_authenticated %}
+                                                <form action="{% url 'delete' city_weather.city_id %}" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Delete</button></form>
+                                                <a href="{% url 'edit' city_weather.city_id %}"><button type="submit" class="btn btn-primary">Edit</button></a>
+                                                {% endif %}
+
+                                            </div>
+                                        </div>
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% if cities %}
+        <form action="{% url 'delete_all' %}" method="post">
+            {% csrf_token %}
+            <button type="post" class="btn btn-danger">Delete all cities</button>
+          </form>
+        {%endif%}
+    </section>
+       <p2> By Mikołaj Jagielak </p2>
+           <br>
+           <br>
+           <h6>My social links: </h6>
+           <a href="https://github.com/jagiel02">My GitHub</a>
+           <br><a href="https://www.linkedin.com/in/mikolaj-jagielak/">My LinkedIn</a>
+
+{% endblock content %}
